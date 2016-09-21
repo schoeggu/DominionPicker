@@ -19,6 +19,7 @@
         <item>Karten-Typ</item>
         <item>Sprache</item>
         <item>Promokarten zuerst</item>
+        <item>Ereignisse und Landmarken zuletzt</item>
     </string-array>
 
 </resources>

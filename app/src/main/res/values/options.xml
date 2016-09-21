@@ -19,6 +19,7 @@
         <item>Type</item>
         <item>Language</item>
         <item>Promos First</item>
+        <item>Events and Landmarks Last</item>
     </string-array>
     <string-array name="sort_card_col" translatable="false">
         <item>set_name</item>
@@ -28,6 +29,7 @@
         <item>type</item>
         <item>CASE language WHEN \'en\' THEN 1 ELSE 0 END, language</item>
         <item>promotional DESC</item>
+        <item>metaKingdom</item>
     </string-array>
     <string-array name="sort_set_col" translatable="false">
         <item>set_name</item>
@@ -36,6 +38,7 @@
         <item />
         <item />
         <item>CASE language WHEN \'en\' THEN 1 ELSE 0 END, language</item>
+        <item />
         <item />
     </string-array>
 

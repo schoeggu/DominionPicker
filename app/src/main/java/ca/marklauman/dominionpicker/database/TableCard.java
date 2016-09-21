@@ -95,6 +95,9 @@ public abstract class TableCard {
     /** Column indicating if this card is a curser meta type. From the cardData table. */
     public static final String _META_CURSER = "metaCurser";
 
+    /** Column indicating if this card is an event, a landmark or another card */
+    public static final String _META_KINGDOM = "metaKingdom";
+
     /** Routine used to convert number-like values (like cost) into a numeric quantity. */
     public static int parseVal(String value) {
         // Just try parsing the value
