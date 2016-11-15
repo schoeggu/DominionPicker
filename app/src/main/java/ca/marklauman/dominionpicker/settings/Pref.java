@@ -161,6 +161,7 @@ public abstract class Pref implements OnSharedPreferenceChangeListener {
             case 4: // v4 -> v5 adds sort_card. Setting default values is all that is needed.
             case 5: update5(pref);
             case 6: update6(pref);
+            case 7: update7(pref);
         }
         pref.edit().putInt(VERSION, res.getInteger(R.integer.pref_version))
             .commit();
@@ -189,6 +190,7 @@ public abstract class Pref implements OnSharedPreferenceChangeListener {
         final String[] defTrans  = res.getStringArray(R.array.def_trans);
         String[] rawTrans = pref.getString(FILT_LANG, res.getString(R.string.filt_lang_def))
                                 .split(",");
+
 
         // Update the app language if needed.
         final String oldLang = pref.getString(APP_LANG, "");
@@ -517,8 +519,16 @@ public abstract class Pref implements OnSharedPreferenceChangeListener {
     private static void update6(SharedPreferences prefs) {
         // Add one more language for the Empires set
         prefs.edit()
-             .putString(FILT_LANG, prefs.getString(FILT_LANG, "")+",0")
-             .commit();
+                .putString(FILT_LANG, prefs.getString(FILT_LANG, "")+",0")
+                .commit();
+    }
+
+    /** Updates preferences from v7 to v8. Does not detect version number */
+    private static void update7(SharedPreferences prefs) {
+        // Add one more language for the Sauna/Avanto Promo
+        prefs.edit()
+                .putString(FILT_LANG, prefs.getString(FILT_LANG, "")+",0")
+                .commit();
     }
 
     /** Check if a value is within a given range */

@@ -314,3 +314,4 @@ _id	language	name	type	requires	text	rules
 313	en	Triumphal Arch	Landmark		When scoring, <vp>3</vp> per copy you have of the 2nd most common Action card among your cards (if it’s a tie, count either).	For example, if you had 7 copies of Villa and 4 copies of Wild Hunt, you would score <vp>12</vp>.
 314	en	Wall	Landmark		When scoring, <b>-<vp>1</vp></b> per card you have after the first 15.	For example, if you had 27 cards in your deck, you would score -<vp>12</vp> for Wall. Scores can go negative.
 315	en	Wolf Den	Landmark		When scoring, <b>-<vp>3</vp></b> per card you have exactly one copy of.	Having no copies of a card, or two or more copies of a card, confers no penalty. Scores can go negative.
+316	en	Sauna/Avanto	Action		This pile starts the game with 5 copies of Saune on top, then 5 copies of Avanto. Only the top card of the pile canbe gained or bought.	
