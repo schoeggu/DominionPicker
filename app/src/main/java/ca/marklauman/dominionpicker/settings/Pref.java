@@ -529,6 +529,9 @@ public abstract class Pref implements OnSharedPreferenceChangeListener {
         prefs.edit()
                 .putString(FILT_LANG, prefs.getString(FILT_LANG, "")+",0")
                 .commit();
+        prefs.edit()
+                .putString(SORT_CARD, prefs.getString(SORT_CARD, "")+",7")
+                .commit();
     }
 
     /** Check if a value is within a given range */
