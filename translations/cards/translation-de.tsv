@@ -315,3 +315,17 @@ _id	language	name	type	requires	text	rules
 314	de	Mauer	Landmarke			
 315	de	Wolfsbau	Landmarke			
 316	de	Sauna/Eisloch	Aktion			
+317	de	Vorbotin	Aktion			
+318	de	Händlerin	Aktion			
+319	de	Vasall	Aktion			
+320	de	Wilddiebin	Aktion			
+321	de	Banditin	Aktion Angriff			
+322	de	Torwächterin	Aktion			
+323	de	Töpferei	Aktion			
+324	de	Herumtreiberin	Aktion			
+325	de	Diplomatin	Aktion Reaktion			
+326	de	Mühle	Aktion Punkte			
+327	de	Geheimgang	Aktion			
+328	de	Höflinge	Aktion			
+329	de	Patrouille	Aktion			
+330	de	Austausch	Aktion Angriff			
