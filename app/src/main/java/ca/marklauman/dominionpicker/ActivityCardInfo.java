@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -16,6 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -118,7 +122,7 @@ public class ActivityCardInfo extends AppCompatActivity
     }
 
 
-    @Override
+    @Override @NonNull
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader c = new CursorLoader(this);
         c.setUri(Provider.URI_CARD_ALL);
@@ -130,7 +134,7 @@ public class ActivityCardInfo extends AppCompatActivity
 
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if(data == null || !data.moveToFirst()) {
             Log.wtf("ca.marklauman.dominionpicker.ActivityCardInfo",
                     "There is no card "+getIntent().getLongExtra(PARAM_ID, -1));
@@ -145,7 +149,7 @@ public class ActivityCardInfo extends AppCompatActivity
         String txt = getString(data, TableCard._TEXT);
         if(txt == null || "".equals(txt)) {
             vInfo.setVisibility(View.GONE);
-            setupEmail(vNoInfo, res, getLong(data, TableCard._ID),
+            setupEmail(vNoInfo, res, getId(data),
                                      getString(data, TableCard._LANG));
         } else vInfo.setText(getString(data, TableCard._TEXT),
                              getString(data, TableCard._LANG));
@@ -173,7 +177,10 @@ public class ActivityCardInfo extends AppCompatActivity
         int expIcon = R.drawable.ic_set_unknown;
         try { expIcon = expIcons[getInt(data, TableCard._SET_ID)];
         } catch(Exception ignored){}
-        vSetIcon.setImageResource(expIcon);
+        Glide.with(this)
+             .load(expIcon)
+             .apply(RequestOptions.noTransformation())
+             .into(vSetIcon);
 
         // Show the card
         vLoading.setVisibility(View.GONE);
@@ -195,14 +202,14 @@ public class ActivityCardInfo extends AppCompatActivity
         ((TextView)vNoInfo.findViewById(R.id.card_no_info_msg))
                           .setText(str);
 
-        EmailButton button = (EmailButton)vNoInfo.findViewById(R.id.email);
+        EmailButton button = vNoInfo.findViewById(R.id.email);
         button.setSubject(String.format(res.getString(R.string.card_mail_subject),
                                         cardId, lang));
     }
 
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {}
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {}
 
 
     /** Extract a string from the cursor.
@@ -212,11 +219,10 @@ public class ActivityCardInfo extends AppCompatActivity
         return cursor.getString(cursor.getColumnIndex(columnName));
     }
 
-    /** Extract a long from the cursor.
-     *  @param cursor The cursor to extract the long from.
-     *  @param columnName The name of the column you're looking for. */
-    private static long getLong(Cursor cursor, String columnName) {
-        return cursor.getLong(cursor.getColumnIndex(columnName));
+    /** Extract an id form the cursor.
+     *  @param cursor The cursor to extract the long from. */
+    private static long getId(Cursor cursor) {
+        return cursor.getLong(cursor.getColumnIndex(TableCard._ID));
     }
 
     /** Extract an integer from the cursor.

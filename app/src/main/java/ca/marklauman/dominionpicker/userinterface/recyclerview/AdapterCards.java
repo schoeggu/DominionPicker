@@ -4,8 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
@@ -15,7 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.Locale;
 
@@ -53,12 +53,8 @@ public class AdapterCards extends BasicTouchAdapter<AdapterCards.ViewHolder> {
     private final boolean hasSwipe;
     /** Factory used to set the card color */
     private final CardColorFactory colorFactory;
-    /** Size of the factory images */
-    private final int imgSize;
-    /** Icon used if an expansion is unknown */
-    private final Drawable set_none;
     /** Icon used for each expansion */
-    private final Drawable[] set_icons;
+    private final int[] set_icons;
     /** Formatter string used to label the card details button */
     private final String cardDetails;
     /** Used to describe the icons for coins, debt tokens and potions. */
@@ -70,25 +66,25 @@ public class AdapterCards extends BasicTouchAdapter<AdapterCards.ViewHolder> {
     /** Index of the "_id" column for {@link #mCursor}. */
     int _id;
     /** Index of the "name" column for {@link #mCursor}. */
-    int _name;
+    private int _name;
     /** Index of the "set_id" column for {@link #mCursor}. */
-    int _set_id;
+    private int _set_id;
     /** Index of the "set_name" column for {@link #mCursor}. */
-    int _set_name;
+    private int _set_name;
     /** Index of the "cost" column for {@link #mCursor}. */
-    int _cost;
+    private int _cost;
     /** Index of the "debt" column for {@link #mCursor}. */
-    int _debt;
+    private int _debt;
     /** Index of the "potion" column for {@link #mCursor}. */
-    int _potion;
+    private int _potion;
     /** Index of the "language" column for {@link #mCursor}. */
-    int _language;
+    private int _language;
     /** Index of the "type" column for {@link #mCursor}. */
-    int _type;
+    private int _type;
     /** Index of the "requires" column for {@link #mCursor}. */
-    int _requires;
+    private int _requires;
     /** Index of the landmark card type */
-    int _type_landmark;
+    private int _type_landmark;
 
 
     /** Listener to be notified if a card is clicked. */
@@ -117,10 +113,8 @@ public class AdapterCards extends BasicTouchAdapter<AdapterCards.ViewHolder> {
         context = view.getContext();
         hasSwipe = dismiss;
         Resources res   = view.getResources();
-        imgSize = res.getDimensionPixelSize(R.dimen.card_thumb_size);
         colorFactory = new CardColorFactory(context);
-        set_none = ContextCompat.getDrawable(context, R.drawable.ic_set_unknown);
-        set_icons = Utils.getDrawableArray(context, R.array.card_set_icons);
+        set_icons = Utils.getResourceArray(context, R.array.card_set_icons);
         cardDetails = res.getString(R.string.card_details_button);
         mDescriber = new IconDescriber(context);
     }
@@ -152,15 +146,15 @@ public class AdapterCards extends BasicTouchAdapter<AdapterCards.ViewHolder> {
     }
 
 
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @Override @NonNull
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         return new ViewHolder(inflater.inflate(R.layout.list_item_card, parent, false));
     }
 
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
 
         final long id = mCursor.getLong(_id);
@@ -168,20 +162,22 @@ public class AdapterCards extends BasicTouchAdapter<AdapterCards.ViewHolder> {
 
         // Card color, image and name
         colorFactory.updateBackground(holder.color, mCursor);
-        Picasso.with(context)
-               .load("file:///android_asset/card_images/"
-                     + String.format(Locale.US, "%03d", id) + ".jpg")
-               .resize(imgSize, imgSize)
-               .into(holder.image);
+        Glide.with(context)
+             .load("file:///android_asset/card_images/"
+                   + String.format(Locale.US, "%03d", id) + ".jpg")
+             .into(holder.image);
         holder.details.setContentDescription(String.format(Locale.US, cardDetails, name));
         holder.name.setText(name);
 
         // The set icon and name
-        Drawable set_icon = set_none;
+        int set_icon = R.drawable.ic_set_unknown;
         try {
             set_icon = set_icons[mCursor.getInt(_set_id)];
         } catch(ArrayIndexOutOfBoundsException ignored) {}
-        holder.set.setImageDrawable(set_icon);
+        Glide.with(context)
+             .load(set_icon)
+             .apply(RequestOptions.noTransformation())
+             .into(holder.set);
         holder.set.setContentDescription(mCursor.getString(_set_name));
 
         // The card type and cost
@@ -243,7 +239,7 @@ public class AdapterCards extends BasicTouchAdapter<AdapterCards.ViewHolder> {
         @BindView(R.id.card_name)          public TextView name;
         @BindView(R.id.card_extra)         public TextView extra;
         @BindView(R.id.card_type)          public TextView type;
-        @BindView(R.id.card_requires)      public TextView requires;
+        @BindView(R.id.card_requires)      TextView requires;
         /** Icon used to display the price of this card */
         private final PriceIcon price;
 
@@ -256,7 +252,7 @@ public class AdapterCards extends BasicTouchAdapter<AdapterCards.ViewHolder> {
 
         /** View the details of this card. Triggered when the card's image is clicked. */
         @OnClick(R.id.card_details)
-        public void launchDetails() {
+        void launchDetails() {
             mCursor.moveToPosition(getAdapterPosition());
             AdapterCards.launchDetails(context, mCursor.getLong(_id));
         }
@@ -269,12 +265,12 @@ public class AdapterCards extends BasicTouchAdapter<AdapterCards.ViewHolder> {
         }
 
         @OnClick(R.id.click_area)
-        public void click() {
+        void click() {
             notifyClick(false);
         }
 
         @OnLongClick(R.id.click_area)
-        public boolean longClick() {
+        boolean longClick() {
             notifyClick(true);
             return !hasSwipe;
         }
