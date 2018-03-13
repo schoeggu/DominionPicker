@@ -574,7 +574,7 @@ public abstract class Pref implements OnSharedPreferenceChangeListener {
         // Add one more language for the Sauna/Avanto Promo
         prefs.edit()
                 .putString(FILT_LANG, prefs.getString(FILT_LANG, "")+",0")
-                .commapplyit();
+                .apply();
         prefs.edit()
                 .putString(SORT_CARD, prefs.getString(SORT_CARD, "")+",7")
                 .apply();
